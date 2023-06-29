@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">andriod-art-space-app</string>
+
+    <string name="title_1">Fruit, Jug, and a Glass</string>
+    <string name="artist_1">Jean Siméon Chardin</string>
+    <string name="year_1">1726/1728</string>
+
+    <string name="title_2">Portrait of a Young Man and His Tutor</string>
+    <string name="artist_2">Nicolas de Largillierre</string>
+    <string name="year_2">1685</string>
+
+    <string name="title_3">The Attentive Nurse</string>
+    <string name="artist_3">Jean Siméon Chardin</string>
+    <string name="year_3">1747</string>
+</resources>
