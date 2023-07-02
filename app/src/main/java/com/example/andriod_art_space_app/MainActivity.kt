@@ -8,21 +8,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -49,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    AndroidArtSpace()
                 }
             }
         }
@@ -108,7 +107,8 @@ fun ArtworkDescriptionPanel(title: String, artist: String, year: String,
 }
 
 @Composable
-fun UIButtons(modifier: Modifier = Modifier){
+fun UIButtons(prevButton: () -> Unit, nextButton: () -> Unit,
+              modifier: Modifier = Modifier){
 
     Row(modifier = modifier
         .fillMaxWidth()
@@ -117,10 +117,8 @@ fun UIButtons(modifier: Modifier = Modifier){
         horizontalArrangement = Arrangement.SpaceEvenly)
     {
 
-        var i = 0
-
         Button(
-            onClick = { i++ },
+            onClick = prevButton,
             modifier = Modifier
                 .weight(1f)
                 .padding(5.dp),
@@ -132,7 +130,7 @@ fun UIButtons(modifier: Modifier = Modifier){
         )
 
         Button(
-            onClick = {},
+            onClick = nextButton,
             modifier = Modifier
                 .weight(1f)
                 .padding(5.dp),
@@ -150,15 +148,17 @@ fun UIButtons(modifier: Modifier = Modifier){
 @Composable
 fun AndroidArtSpace() {
 
-    var i = 0;
-    var title: String
-    var artist: String
+    var artistId by remember {
+        mutableStateOf(0)
+    }
+    var title : String
+    var artist : String
     var year: String
     var image: Painter
 
 
     //TODO REPLACE
-    when (i){
+    when (artistId){
 
         0 ->{
             image = painterResource(id = R.drawable.fruit__jug__and_a_glass_1943_7_4)
@@ -195,13 +195,15 @@ fun AndroidArtSpace() {
         verticalArrangement = Arrangement.Center
     ) {
 
-        ArtworkImage(Modifier.weight(4f,), painter = image)
-
-        //TODO replace arguments
+        ArtworkImage(Modifier.weight(4f), painter = image)
         ArtworkDescriptionPanel(title, artist, year = year,
             Modifier.weight(1f))
-        //Spacer(Modifier.weight(1f))
-        UIButtons(Modifier.weight(1f))
+
+        UIButtons({
+                  if (artistId > 0)
+                      artistId--
+                  },
+            { artistId++}, Modifier.weight(1f))
     }
 }
 
