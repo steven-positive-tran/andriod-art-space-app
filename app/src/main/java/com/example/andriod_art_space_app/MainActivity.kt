@@ -7,12 +7,23 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -146,6 +157,25 @@ fun UIButtons(prevButton: () -> Unit, nextButton: () -> Unit,
 }
 
 @Composable
+fun ArtworkDisplay(modifier: Modifier = Modifier,
+image: Painter,
+title: String,
+artist: String,
+year: String)
+{
+    Column(modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center)
+    {
+        ArtworkImage(Modifier.weight(4f), painter = image)
+        ArtworkDescriptionPanel(title, artist, year,
+            Modifier.weight(1f))
+    }
+
+}
+
+
+@Composable
 fun AndroidArtSpace() {
 
     var artistId by remember {
@@ -156,8 +186,6 @@ fun AndroidArtSpace() {
     var year: String
     var image: Painter
 
-
-    //TODO REPLACE
     when (artistId){
 
         0 ->{
@@ -195,17 +223,22 @@ fun AndroidArtSpace() {
         verticalArrangement = Arrangement.Center
     ) {
 
-        ArtworkImage(Modifier.weight(4f), painter = image)
-        ArtworkDescriptionPanel(title, artist, year = year,
-            Modifier.weight(1f))
 
+        //TODO Find a better solution for the vertical Scroll
+        ArtworkDisplay(
+            Modifier
+                .weight(4f)
+                .verticalScroll(rememberScrollState())
+                .height(IntrinsicSize.Max)
+            ,image, title, artist, year)
         UIButtons({
                   if (artistId > 0)
                       artistId--
                   },
-            { artistId++}, Modifier.weight(1f))
+            { artistId++}, Modifier.weight(1f, false))
     }
 }
+
 
 
 @Preview(showBackground = true)
