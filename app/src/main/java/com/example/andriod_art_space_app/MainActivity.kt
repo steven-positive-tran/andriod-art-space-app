@@ -7,21 +7,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -47,6 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.andriod_art_space_app.data.DataSource
+import com.example.andriod_art_space_app.model.Painting
 import com.example.andriod_art_space_app.ui.theme.AndriodartspaceappTheme
 
 class MainActivity : ComponentActivity() {
@@ -59,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AndroidArtSpace()
+                    AndroidArtSpace(DataSource().loadPaintings())
                 }
             }
         }
@@ -158,17 +153,17 @@ fun UIButtons(prevButton: () -> Unit, nextButton: () -> Unit,
 
 @Composable
 fun ArtworkDisplay(modifier: Modifier = Modifier,
-image: Painter,
-title: String,
-artist: String,
-year: String)
+painting: Painting)
 {
     Column(modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center)
     {
-        ArtworkImage(Modifier.weight(4f), painter = image)
-        ArtworkDescriptionPanel(title, artist, year,
+        ArtworkImage(Modifier.weight(4f), painter = painterResource(id = painting.imageResource))
+        ArtworkDescriptionPanel(
+            stringResource(id = painting.title),
+            stringResource(id = painting.artistName),
+            stringResource(id = painting.year),
             Modifier.weight(1f))
     }
 
@@ -176,43 +171,10 @@ year: String)
 
 
 @Composable
-fun AndroidArtSpace() {
+fun AndroidArtSpace(paintingList: List<Painting>) {
 
     var artistId by remember {
         mutableStateOf(0)
-    }
-    var title : String
-    var artist : String
-    var year: String
-    var image: Painter
-
-    when (artistId){
-
-        0 ->{
-            image = painterResource(id = R.drawable.fruit__jug__and_a_glass_1943_7_4)
-            title = stringResource(id = R.string.title_1)
-            artist = stringResource(id = R.string.artist_1)
-            year = stringResource(id = R.string.year_1)
-        }
-        1 ->{
-            image = painterResource(id = R.drawable.portrait_of_a_young_man_and_his_tutor_1961_9_26)
-            title = stringResource(id = R.string.title_2)
-            artist = stringResource(id = R.string.artist_2)
-            year = stringResource(id = R.string.year_2)
-        }
-        2-> {
-            image = painterResource(id = R.drawable.the_attentive_nurse_1952_5_37)
-            title = stringResource(id = R.string.title_3)
-            artist = stringResource(id = R.string.artist_3)
-            year = stringResource(id = R.string.year_3)
-        }
-        else -> {
-            image = painterResource(id = R.drawable.fruit__jug__and_a_glass_1943_7_4)
-            title = stringResource(id = R.string.title_1)
-            artist = stringResource(id = R.string.artist_1)
-            year = stringResource(id = R.string.year_1)
-        }
-
     }
 
     Column(
@@ -230,7 +192,7 @@ fun AndroidArtSpace() {
                 .weight(4f)
                 .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
-            ,image, title, artist, year)
+            ,paintingList[artistId])
         UIButtons({
                   if (artistId > 0)
                       artistId--
@@ -245,6 +207,6 @@ fun AndroidArtSpace() {
 @Composable
 fun GreetingPreview() {
     AndriodartspaceappTheme {
-        AndroidArtSpace()
+        AndroidArtSpace(DataSource().loadPaintings())
     }
 }
